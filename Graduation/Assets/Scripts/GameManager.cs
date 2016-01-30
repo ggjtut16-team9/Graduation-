@@ -26,11 +26,22 @@ public class GameManager : MonoBehaviour {
 
     private float m_timer;
     public float m_waitTime = 10.0f;
+    public float m_answerTime = 2.5f;
 
     public AudioClip[] m_audioClips;
     public AudioSource m_audioSource;
 
     public UnityEngine.UI.Text m_resultText;
+
+    public UnityEngine.UI.Text m_textQuestion;
+    public UnityEngine.UI.Text m_textAnswer;
+    public UnityEngine.UI.Text m_textAnswerDup;
+    public UnityEngine.UI.Text m_textShout;
+
+    public UnityEngine.UI.Image m_imageQuestion;
+    public UnityEngine.UI.Image m_imageAnswer;
+    public UnityEngine.UI.Image m_imageShout;
+    public UnityEngine.UI.Image m_imageHuman;
 
     public string[] m_questions = { "みんなで行った",
                                     "全力で競い合った",
@@ -66,16 +77,37 @@ public class GameManager : MonoBehaviour {
         {
             case Step.STEP_INIT:
                 {
+                    m_textAnswer.enabled = false;
+                    m_textAnswerDup.enabled = false;
+                    m_textQuestion.enabled = false;
+                    m_textShout.enabled = false;
+                    m_imageAnswer.enabled = false;
+                    m_imageQuestion.enabled = false;
+                    m_imageShout.enabled = false;
                     if(loadAudio())
                     {
+                        m_textQuestion.enabled = true;
+                        m_imageQuestion.enabled = true;
+
+                        m_textQuestion.text = m_questions[m_progress];
+
                         m_mainStep = Step.STEP_QUESTION;
                     }
                 }
                 break;
             case Step.STEP_QUESTION:
                 {
-                    if(teach())
+                    if (teach())
                     {
+                        m_textAnswer.enabled = true;
+                        m_textAnswerDup.enabled = true;
+                        m_imageAnswer.enabled = true;
+                        m_textShout.enabled = true;
+                        m_imageShout.enabled = true;
+
+                        m_textAnswer.text = m_answers[m_progress];
+                        m_textAnswerDup.text = m_answers[m_progress];
+
                         m_mainStep = Step.STEP_ANSWER;
                     }
                 }
@@ -86,6 +118,7 @@ public class GameManager : MonoBehaviour {
                     {
                         m_mainStep = Step.STEP_INIT; //repeat once
                     }
+                    CullOverlay();
                     m_result = speech();
                     if (m_result == Result.RESULT_OK ||
                         m_result == Result.RESULT_ERROR )
@@ -104,7 +137,7 @@ public class GameManager : MonoBehaviour {
                 break;
             case Step.STEP_DECISION:
                 {
-                    if(showDecision())
+                    if(showDecision(Time.deltaTime))
                     {
                         if (m_result == Result.RESULT_OK)
                         {
@@ -171,16 +204,33 @@ public class GameManager : MonoBehaviour {
         return false;
     }
 
+    void CullOverlay()
+    {
+        float t = m_timer;
+        if(t > m_answerTime )
+        {
+            t = m_answerTime;
+        }
+        float tx = m_textAnswer.rectTransform.rect.x
+            + m_textAnswer.rectTransform.rect.width * (t / m_answerTime);
+        float tw = m_textAnswer.rectTransform.rect.width
+            - m_textAnswer.rectTransform.rect.width * (t / m_answerTime);
+
+        Rect r = new Rect( tx,
+                          m_textAnswer.rectTransform.rect.y,
+                          tw ,
+                          m_textAnswer.rectTransform.rect.height);
+        m_textAnswerDup.Cull(r, true);
+    }
+
     Result speech()
     {
         if(!julius.Result.Equals(""))
         {
             if(string.Compare(m_answers[m_progress], julius.Result) == 0)
             {
-                julius.Result = "";
                 return Result.RESULT_OK;
             }
-            julius.Result = "";
             return Result.RESULT_ERROR;
         }
         return Result.RESULT_NONE;
@@ -188,16 +238,22 @@ public class GameManager : MonoBehaviour {
 
     void showMaru()
     {
-        m_resultText.text = "ok";
+        m_textAnswer.text = julius.Result;
     }
 
     void showBatu()
     {
-        m_resultText.text = "reject";
+        m_textAnswer.text = julius.Result;
     }
 
-    bool showDecision()
+    bool showDecision(float dt)
     {
-        return true;
+        m_timer += dt;
+        if (m_timer > m_waitTime)
+        {
+            m_timer = 0.0f;
+            return true;
+        }
+        return false;
     }
 }
