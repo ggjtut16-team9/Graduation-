@@ -3,25 +3,25 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
-    private enum Step
+    public enum Step
     {
         STEP_INIT,
-        STEP_TEACH,
-        STEP_MAIN,
+        STEP_QUESTION,
+        STEP_ANSWER,
         STEP_DECISION,
         STEP_EXIT,
     }
 
-    private enum Result
+    public enum Result
     {
         RESULT_NONE,
         RESULT_OK,
         RESULT_ERROR,
     }
 
-    private Step m_mainStep;
-    private Result m_result;
-    private int m_progress;
+    private Step m_mainStep { get; set; }
+    private Result m_result { get; set; }
+    private int m_progress { get; set; }
     private Julius_Client julius;
 
     private float m_timer;
@@ -30,7 +30,22 @@ public class GameManager : MonoBehaviour {
     public AudioClip[] m_audioClips;
     public AudioSource m_audioSource;
 
-    public UnityEngine.UI.Text resultText;
+    public UnityEngine.UI.Text m_resultText;
+
+    public string[] m_questions = { "みんなで行った",
+                                    "全力で競い合った",
+                                    "仲間ができた",
+                                    "気持ちが一つになった",
+                                    "気持ちが触れ合った",
+                                    "心もきれいにした"
+                                  };
+
+    public string[] m_answers = { "修学旅行",
+                                  "運動会",
+                                  "クラブ活動",
+                                  "合唱会",
+                                  "文化祭",
+                                  "大掃除"}; //答えの日本語
 
     // Use this for initialization
     void Start ()
@@ -53,19 +68,19 @@ public class GameManager : MonoBehaviour {
                 {
                     if(loadAudio())
                     {
-                        m_mainStep = Step.STEP_TEACH;
+                        m_mainStep = Step.STEP_QUESTION;
                     }
                 }
                 break;
-            case Step.STEP_TEACH:
+            case Step.STEP_QUESTION:
                 {
                     if(teach())
                     {
-                        m_mainStep = Step.STEP_MAIN;
+                        m_mainStep = Step.STEP_ANSWER;
                     }
                 }
                 break;
-            case Step.STEP_MAIN:
+            case Step.STEP_ANSWER:
                 {
                     if(timeup(Time.deltaTime)) //10sec
                     {
@@ -110,7 +125,7 @@ public class GameManager : MonoBehaviour {
                 break;
             case Step.STEP_EXIT:
                 {
-                    resultText.text = "Clear!";
+                    m_resultText.text = "Clear!";
                 }
                 break;
             default:
@@ -153,7 +168,7 @@ public class GameManager : MonoBehaviour {
     {
         if(!julius.Result.Equals(""))
         {
-            if(string.Compare("こんにちは", julius.Result) == 0)
+            if(string.Compare(m_answers[m_progress], julius.Result) == 0)
             {
                 return Result.RESULT_OK;
             }
@@ -164,12 +179,12 @@ public class GameManager : MonoBehaviour {
 
     void showMaru()
     {
-        resultText.text = "ok";
+        m_resultText.text = "ok";
     }
 
     void showBatu()
     {
-        resultText.text = "reject";
+        m_resultText.text = "reject";
     }
 
     bool showDecision()
