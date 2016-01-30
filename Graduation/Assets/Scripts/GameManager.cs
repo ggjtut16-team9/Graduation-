@@ -35,13 +35,13 @@ public class GameManager : MonoBehaviour {
 
     public UnityEngine.UI.Text m_textQuestion;
     public UnityEngine.UI.Text m_textAnswer;
-    public UnityEngine.UI.Text m_textAnswerDup;
     public UnityEngine.UI.Text m_textShout;
 
     public UnityEngine.UI.Image m_imageQuestion;
-    public UnityEngine.UI.Image m_imageAnswer;
+    public UnityEngine.UI.Image m_imageAnswerBack;
     public UnityEngine.UI.Image m_imageShout;
-    public UnityEngine.UI.Image m_imageHuman;
+    public UnityEngine.UI.Image m_imageAnswer;
+    public UnityEngine.UI.Image m_imageAnswerDup;
 
     public string[] m_questions = { "みんなで行った",
                                     "全力で競い合った",
@@ -78,10 +78,11 @@ public class GameManager : MonoBehaviour {
             case Step.STEP_INIT:
                 {
                     m_textAnswer.enabled = false;
-                    m_textAnswerDup.enabled = false;
                     m_textQuestion.enabled = false;
                     m_textShout.enabled = false;
                     m_imageAnswer.enabled = false;
+                    m_imageAnswerDup.enabled = false;
+                    m_imageAnswerBack.enabled = false;
                     m_imageQuestion.enabled = false;
                     m_imageShout.enabled = false;
                     if(loadAudio())
@@ -99,14 +100,14 @@ public class GameManager : MonoBehaviour {
                 {
                     if (teach())
                     {
-                        m_textAnswer.enabled = true;
-                        m_textAnswerDup.enabled = true;
+                        m_imageAnswerBack.enabled = true;
                         m_imageAnswer.enabled = true;
                         m_textShout.enabled = true;
                         m_imageShout.enabled = true;
 
-                        m_textAnswer.text = m_answers[m_progress];
-                        m_textAnswerDup.text = m_answers[m_progress];
+                        string path = string.Format("Images/answer{0:D2}.png", m_progress + 1);
+                        m_imageAnswerDup.sprite = Sprite.Create(Resources.Load(path) as Texture2D, m_imageAnswerDup.sprite.rect, m_imageAnswerDup.sprite.pivot);
+                        m_imageAnswer.sprite = Sprite.Create(Resources.Load(path) as Texture2D, m_imageAnswerDup.sprite.rect, m_imageAnswerDup.sprite.pivot);
 
                         m_mainStep = Step.STEP_ANSWER;
                     }
@@ -207,20 +208,12 @@ public class GameManager : MonoBehaviour {
     void CullOverlay()
     {
         float t = m_timer;
-        if(t > m_answerTime )
+        if(m_timer > m_answerTime)
         {
-            t = m_answerTime;
+            m_timer = m_answerTime;
         }
-        float tx = m_textAnswer.rectTransform.rect.x
-            + m_textAnswer.rectTransform.rect.width * (t / m_answerTime);
-        float tw = m_textAnswer.rectTransform.rect.width
-            - m_textAnswer.rectTransform.rect.width * (t / m_answerTime);
-
-        Rect r = new Rect( tx,
-                          m_textAnswer.rectTransform.rect.y,
-                          tw ,
-                          m_textAnswer.rectTransform.rect.height);
-        m_textAnswerDup.Cull(r, true);
+        
+        m_imageAnswer.fillAmount = 1.0f - (m_timer / m_answerTime); 
     }
 
     Result speech()
@@ -238,11 +231,13 @@ public class GameManager : MonoBehaviour {
 
     void showMaru()
     {
+        m_textAnswer.enabled = true;
         m_textAnswer.text = julius.Result;
     }
 
     void showBatu()
     {
+        m_textAnswer.enabled = true;
         m_textAnswer.text = julius.Result;
     }
 
@@ -252,6 +247,7 @@ public class GameManager : MonoBehaviour {
         if (m_timer > m_waitTime)
         {
             m_timer = 0.0f;
+            m_textAnswer.enabled = false;
             return true;
         }
         return false;
