@@ -108,17 +108,24 @@ public class GameManager : MonoBehaviour {
                     {
                         if (m_result == Result.RESULT_OK)
                         {
-                            m_mainStep = Step.STEP_EXIT;
-                        }
-                        else if (m_result == Result.RESULT_ERROR)
-                        { 
                             m_progress++;
-                            if(m_progress == m_audioClips.Length)
+                            if(m_progress == m_answers.Length)
+                            {
+                                m_mainStep = Step.STEP_EXIT;
+                            }
+                            else
                             {
                                 m_mainStep = Step.STEP_INIT;
                             }
+                        }
+                        else if (m_result == Result.RESULT_ERROR)
+                        { 
+                            
+                            m_mainStep = Step.STEP_INIT;
+                            
                             
                         }
+                        m_result = Result.RESULT_NONE;
                         
                     }
                 }
@@ -170,8 +177,10 @@ public class GameManager : MonoBehaviour {
         {
             if(string.Compare(m_answers[m_progress], julius.Result) == 0)
             {
+                julius.Result = "";
                 return Result.RESULT_OK;
             }
+            julius.Result = "";
             return Result.RESULT_ERROR;
         }
         return Result.RESULT_NONE;
