@@ -43,6 +43,9 @@ public class GameManager : MonoBehaviour {
     public UnityEngine.UI.Image m_imageAnswer;
     public UnityEngine.UI.Image m_imageAnswerDup;
 
+    public UnityEngine.UI.Image m_imageOK;
+    public UnityEngine.UI.Image m_imageNG;
+
     public string[] m_questions = { "みんなで行った",
                                     "全力で競い合った",
                                     "仲間ができた",
@@ -85,6 +88,8 @@ public class GameManager : MonoBehaviour {
                     m_imageAnswerBack.enabled = false;
                     m_imageQuestion.enabled = false;
                     m_imageShout.enabled = false;
+                    m_imageOK.enabled = false;
+                    m_imageNG.enabled = false;
                     if(loadAudio())
                     {
                         m_textQuestion.enabled = true;
@@ -101,6 +106,7 @@ public class GameManager : MonoBehaviour {
                     if (teach())
                     {
                         m_imageAnswerBack.enabled = true;
+                        m_imageAnswerDup.enabled = true;
                         m_imageAnswer.enabled = true;
                         m_textShout.enabled = true;
                         m_imageShout.enabled = true;
@@ -167,11 +173,12 @@ public class GameManager : MonoBehaviour {
             case Step.STEP_EXIT:
                 {
                     m_resultText.text = "Clear!";
+                    Application.LoadLevel("title");
                 }
                 break;
             default:
                 {
-
+                    
                 }
                 break;
         }
@@ -231,13 +238,19 @@ public class GameManager : MonoBehaviour {
 
     void showMaru()
     {
+        m_imageOK.enabled = true;
         m_textAnswer.enabled = true;
+        m_imageAnswer.enabled = false;
+        m_imageAnswerDup.enabled = false;
         m_textAnswer.text = julius.Result;
     }
 
     void showBatu()
     {
+        m_imageNG.enabled = true;
         m_textAnswer.enabled = true;
+        m_imageAnswer.enabled = false;
+        m_imageAnswerDup.enabled = false;
         m_textAnswer.text = julius.Result;
     }
 
@@ -248,6 +261,8 @@ public class GameManager : MonoBehaviour {
         {
             m_timer = 0.0f;
             m_textAnswer.enabled = false;
+            m_imageOK.enabled = false;
+            m_imageOK.enabled = false;
             return true;
         }
         return false;
