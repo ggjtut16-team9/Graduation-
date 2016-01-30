@@ -40,12 +40,12 @@ public class AudioManager : MonoBehaviour
             i++;
         }
 
-        //foreach (AudioClip AC in AudioClipsBGM)
-        //{
-        //    m_AudioBGMClips.Add((AudioList)i, AC);
+        foreach (AudioClip AC in AudioClipsBGM)
+        {
+            m_AudioBGMClips.Add((AudioList)i, AC);
 
-        //    i++;
-        //}
+            i++;
+        }
     }
 
     public void BGMPlay(AudioList name)

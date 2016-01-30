@@ -5,6 +5,7 @@ public class TutrialSE : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        AudioManager.Instance.BGMStop();
         AudioManager.Instance.SEPlay(AudioList.tutrial);
 	}
 	
