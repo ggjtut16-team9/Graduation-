@@ -243,6 +243,7 @@ public class GameManager : MonoBehaviour {
 
     void showMaru()
     {
+        m_audioSource.PlayOneShot(Resources.Load("Audios/good") as AudioClip);
         m_imageOK.enabled = true;
         m_textAnswer.enabled = true;
         m_imageAnswer.enabled = false;
@@ -252,6 +253,7 @@ public class GameManager : MonoBehaviour {
 
     void showBatu()
     {
+        m_audioSource.PlayOneShot(Resources.Load("Audios/bad") as AudioClip);
         m_imageNG.enabled = true;
         m_textAnswer.enabled = true;
         m_imageAnswer.enabled = false;
