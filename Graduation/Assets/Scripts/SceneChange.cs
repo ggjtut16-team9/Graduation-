@@ -7,6 +7,7 @@ public class SceneChange : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        AudioManager.Instance.BGMPlay(AudioList.friend);
 	
 	}
 	
@@ -15,6 +16,7 @@ public class SceneChange : MonoBehaviour {
 
         if(Input.GetMouseButtonDown(0))
         {
+            AudioManager.Instance.BGMStop();
             Application.LoadLevel(m_NextScene);
         }
 	

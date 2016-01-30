@@ -11,5 +11,7 @@ public enum AudioList
     speech04,
     speech05,
     speech06,
-    tutrial
+    tutrial,
+    button02,
+    friend
 }
