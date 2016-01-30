@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour {
 
     private Step m_mainStep { get; set; }
     private Result m_result { get; set; }
-    private int m_progress { get; set; }
+    public int m_progress { get; set; }
     private Julius_Client julius;
 
     private float m_timer;
@@ -111,9 +111,14 @@ public class GameManager : MonoBehaviour {
                         m_textShout.enabled = true;
                         m_imageShout.enabled = true;
 
-                        string path = string.Format("Images/answer{0:D2}", m_progress + 1);
-                        m_imageAnswerDup.overrideSprite = Resources.Load(path) as Sprite;
-                        m_imageAnswer.overrideSprite = Resources.Load(path) as Sprite;
+                        string path = string.Format("answer{0:D2}", m_progress + 1);
+                        //Resourcesのパス
+                        Sprite[] allSprites = Resources.LoadAll<Sprite>("Images");
+                        //ロードしたスプライトを名前で検索
+                        Sprite sp = System.Array.Find<Sprite>(allSprites
+                        , (sprite) => sprite.name.Equals(path));
+                        m_imageAnswerDup.sprite = sp;
+                        m_imageAnswer.sprite = sp;
 
                         m_mainStep = Step.STEP_ANSWER;
                     }
