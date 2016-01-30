@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour {
 
     private Step m_mainStep { get; set; }
     private Result m_result { get; set; }
-    private int m_progress { get; set; }
+    public int m_progress { get; set; }
     private Julius_Client julius;
 
     private float m_timer;
@@ -42,6 +42,9 @@ public class GameManager : MonoBehaviour {
     public UnityEngine.UI.Image m_imageShout;
     public UnityEngine.UI.Image m_imageAnswer;
     public UnityEngine.UI.Image m_imageAnswerDup;
+
+    public UnityEngine.UI.Image m_imageOK;
+    public UnityEngine.UI.Image m_imageNG;
 
     public string[] m_questions = { "みんなで行った",
                                     "全力で競い合った",
@@ -85,6 +88,8 @@ public class GameManager : MonoBehaviour {
                     m_imageAnswerBack.enabled = false;
                     m_imageQuestion.enabled = false;
                     m_imageShout.enabled = false;
+                    m_imageOK.enabled = false;
+                    m_imageNG.enabled = false;
                     if(loadAudio())
                     {
                         m_textQuestion.enabled = true;
@@ -101,13 +106,19 @@ public class GameManager : MonoBehaviour {
                     if (teach())
                     {
                         m_imageAnswerBack.enabled = true;
+                        m_imageAnswerDup.enabled = true;
                         m_imageAnswer.enabled = true;
                         m_textShout.enabled = true;
                         m_imageShout.enabled = true;
 
-                        string path = string.Format("Images/answer{0:D2}.png", m_progress + 1);
-                        m_imageAnswerDup.sprite = Sprite.Create(Resources.Load(path) as Texture2D, m_imageAnswerDup.sprite.rect, m_imageAnswerDup.sprite.pivot);
-                        m_imageAnswer.sprite = Sprite.Create(Resources.Load(path) as Texture2D, m_imageAnswerDup.sprite.rect, m_imageAnswerDup.sprite.pivot);
+                        string path = string.Format("answer{0:D2}", m_progress + 1);
+                        //Resourcesのパス
+                        Sprite[] allSprites = Resources.LoadAll<Sprite>("Images");
+                        //ロードしたスプライトを名前で検索
+                        Sprite sp = System.Array.Find<Sprite>(allSprites
+                        , (sprite) => sprite.name.Equals(path));
+                        m_imageAnswerDup.sprite = sp;
+                        m_imageAnswer.sprite = sp;
 
                         m_mainStep = Step.STEP_ANSWER;
                     }
@@ -167,11 +178,12 @@ public class GameManager : MonoBehaviour {
             case Step.STEP_EXIT:
                 {
                     m_resultText.text = "Clear!";
+                    Application.LoadLevel("title");
                 }
                 break;
             default:
                 {
-
+                    
                 }
                 break;
         }
@@ -231,13 +243,19 @@ public class GameManager : MonoBehaviour {
 
     void showMaru()
     {
+        m_imageOK.enabled = true;
         m_textAnswer.enabled = true;
+        m_imageAnswer.enabled = false;
+        m_imageAnswerDup.enabled = false;
         m_textAnswer.text = julius.Result;
     }
 
     void showBatu()
     {
+        m_imageNG.enabled = true;
         m_textAnswer.enabled = true;
+        m_imageAnswer.enabled = false;
+        m_imageAnswerDup.enabled = false;
         m_textAnswer.text = julius.Result;
     }
 
@@ -248,6 +266,8 @@ public class GameManager : MonoBehaviour {
         {
             m_timer = 0.0f;
             m_textAnswer.enabled = false;
+            m_imageOK.enabled = false;
+            m_imageOK.enabled = false;
             return true;
         }
         return false;
