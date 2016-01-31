@@ -167,6 +167,14 @@ public class GameManager : MonoBehaviour {
                             {
                                 m_audioSource.clip = m_audioClipThanks;
                                 m_audioSource.Play();
+                                m_textShout.enabled = false;
+                                m_imageShout.enabled = false;
+                                m_imageAnswer.enabled = false;
+                                m_imageAnswerDup.enabled = false;
+                                m_textAnswer.enabled = true;
+                                m_textQuestion.text = "ここまでプレイしてもらって";
+                                m_textAnswer.text = "ありがとうございました！\nクリックで終了";
+
                                 m_mainStep = Step.STEP_EXIT;
                             }
                             else
@@ -309,16 +317,17 @@ public class GameManager : MonoBehaviour {
     {
         if(m_audioSource.isPlaying)
         {
-            if (m_thanks1Played == false)
-            {
-                m_thanks1Played = true;
-                m_audioSource.clip = m_audioClipThanks2;
-                m_audioSource.Play();
-            }
+            return false;
+        }
+        if (m_thanks1Played == false)
+        {
+            m_thanks1Played = true;
+            m_audioSource.clip = m_audioClipThanks2;
+            m_audioSource.Play();
             return false;
         }
 
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             return true;
         }
