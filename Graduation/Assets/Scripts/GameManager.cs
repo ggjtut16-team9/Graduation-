@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour {
 
     private float m_timer;
     public float m_waitTime = 10.0f;
+    public float m_questionTime = 0.2f;
     public float m_answerTime = 2.5f;
     public float m_juliusDisableTime = 1.0f;
 
@@ -81,6 +82,7 @@ public class GameManager : MonoBehaviour {
         {
             case Step.STEP_INIT:
                 {
+                    m_timer = 0.0f;
                     m_textAnswer.enabled = false;
                     m_textQuestion.enabled = false;
                     m_textShout.enabled = false;
@@ -104,7 +106,7 @@ public class GameManager : MonoBehaviour {
                 break;
             case Step.STEP_QUESTION:
                 {
-                    if (teach())
+                    if (teach(Time.deltaTime))
                     {
                         m_imageAnswerBack.enabled = true;
                         m_imageAnswerDup.enabled = true;
@@ -160,6 +162,8 @@ public class GameManager : MonoBehaviour {
                             m_progress++;
                             if(m_progress == m_answers.Length)
                             {
+                                m_audioSource.clip = Resources.Load("Audios/thanks") as AudioClip;
+                                m_audioSource.Play();
                                 m_mainStep = Step.STEP_EXIT;
                             }
                             else
@@ -181,8 +185,12 @@ public class GameManager : MonoBehaviour {
                 break;
             case Step.STEP_EXIT:
                 {
+                    if(speechThanks())
+                    {
+                        Application.LoadLevel("title");
+                    }
                     m_resultText.text = "Clear!";
-                    Application.LoadLevel("title");
+                    
                 }
                 break;
             default:
@@ -201,12 +209,21 @@ public class GameManager : MonoBehaviour {
         return true;
     }
 
-    bool teach()
+    bool teach(float dt)
     {
-        if(m_audioSource.isPlaying)
+        m_timer += dt;
+
+        if (m_timer > m_questionTime)
+        {
+            m_timer = m_questionTime;
+        }
+        m_imageQuestion.fillAmount = (m_timer / m_questionTime);
+        if (m_audioSource.isPlaying)
         {
             return false;
         }
+        m_timer = 0.0f;
+        m_imageQuestion.fillAmount = 1.0f;
         return true;
     }
 
@@ -282,5 +299,21 @@ public class GameManager : MonoBehaviour {
             return true;
         }
         return false;
+    }
+
+
+    bool speechThanks()
+    {
+        if(m_audioSource.isPlaying)
+        {
+            return false;
+        }
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            return true;
+        }
+        return false;
+
     }
 }
