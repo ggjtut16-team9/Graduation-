@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour {
 
     private float m_timer;
     public float m_waitTime = 10.0f;
+    public float m_questionTime = 0.2f;
     public float m_answerTime = 2.5f;
     public float m_juliusDisableTime = 1.0f;
 
@@ -81,6 +82,7 @@ public class GameManager : MonoBehaviour {
         {
             case Step.STEP_INIT:
                 {
+                    m_timer = 0.0f;
                     m_textAnswer.enabled = false;
                     m_textQuestion.enabled = false;
                     m_textShout.enabled = false;
@@ -104,7 +106,7 @@ public class GameManager : MonoBehaviour {
                 break;
             case Step.STEP_QUESTION:
                 {
-                    if (teach())
+                    if (teach(Time.deltaTime))
                     {
                         m_imageAnswerBack.enabled = true;
                         m_imageAnswerDup.enabled = true;
@@ -201,12 +203,21 @@ public class GameManager : MonoBehaviour {
         return true;
     }
 
-    bool teach()
+    bool teach(float dt)
     {
-        if(m_audioSource.isPlaying)
+        m_timer += dt;
+
+        if (m_timer > m_questionTime)
+        {
+            m_timer = m_questionTime;
+        }
+        m_imageQuestion.fillAmount = (m_timer / m_questionTime);
+        if (m_audioSource.isPlaying)
         {
             return false;
         }
+        m_timer = 0.0f;
+        m_imageQuestion.fillAmount = 1.0f;
         return true;
     }
 
