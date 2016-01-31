@@ -51,6 +51,9 @@ public class GameManager : MonoBehaviour {
     public UnityEngine.UI.Image m_imageOK;
     public UnityEngine.UI.Image m_imageNG;
 
+    public ParticleSystem m_particleOK;
+    public ParticleSystem m_particleNG;
+
     public string[] m_questions = { "みんなで行った",
                                     "全力で競い合った",
                                     "仲間ができた",
@@ -75,7 +78,9 @@ public class GameManager : MonoBehaviour {
         julius = GameObject.Find("Julius_client").GetComponent<Julius_Client>();
 
         m_timer = 0.0f;
-        
+
+        m_particleOK.Stop();
+        m_particleNG.Stop();
 
     }
 	
@@ -281,6 +286,7 @@ public class GameManager : MonoBehaviour {
     void showMaru()
     {
         m_audioSource.PlayOneShot(Resources.Load("Audios/good") as AudioClip);
+        m_particleOK.Play();
         m_imageOK.enabled = true;
         m_textAnswer.enabled = true;
         m_imageAnswer.enabled = false;
@@ -291,6 +297,7 @@ public class GameManager : MonoBehaviour {
     void showBatu()
     {
         m_audioSource.PlayOneShot(Resources.Load("Audios/bad") as AudioClip);
+        m_particleNG.Play();
         m_imageNG.enabled = true;
         m_textAnswer.enabled = true;
         m_imageAnswer.enabled = false;
@@ -307,6 +314,8 @@ public class GameManager : MonoBehaviour {
             m_textAnswer.enabled = false;
             m_imageOK.enabled = false;
             m_imageOK.enabled = false;
+            m_particleOK.Stop();
+            m_particleNG.Stop();
             return true;
         }
         return false;
