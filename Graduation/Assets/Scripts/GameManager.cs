@@ -31,6 +31,9 @@ public class GameManager : MonoBehaviour {
     public float m_juliusDisableTime = 1.0f;
 
     public AudioClip[] m_audioClips;
+    public AudioClip m_audioClipThanks;
+    public AudioClip m_audioClipThanks2;
+    private bool m_thanks1Played = false;
     public AudioSource m_audioSource;
 
     public UnityEngine.UI.Text m_resultText;
@@ -162,7 +165,7 @@ public class GameManager : MonoBehaviour {
                             m_progress++;
                             if(m_progress == m_answers.Length)
                             {
-                                m_audioSource.clip = Resources.Load("Audios/thanks") as AudioClip;
+                                m_audioSource.clip = m_audioClipThanks;
                                 m_audioSource.Play();
                                 m_mainStep = Step.STEP_EXIT;
                             }
@@ -290,7 +293,7 @@ public class GameManager : MonoBehaviour {
     bool showDecision(float dt)
     {
         m_timer += dt;
-        if (m_timer > m_waitTime)
+        if (m_timer > m_answerTime)
         {
             m_timer = 0.0f;
             m_textAnswer.enabled = false;
@@ -306,6 +309,12 @@ public class GameManager : MonoBehaviour {
     {
         if(m_audioSource.isPlaying)
         {
+            if (m_thanks1Played == false)
+            {
+                m_thanks1Played = true;
+                m_audioSource.clip = m_audioClipThanks2;
+                m_audioSource.Play();
+            }
             return false;
         }
 
