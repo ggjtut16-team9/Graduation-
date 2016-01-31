@@ -162,6 +162,8 @@ public class GameManager : MonoBehaviour {
                             m_progress++;
                             if(m_progress == m_answers.Length)
                             {
+                                m_audioSource.clip = Resources.Load("Audios/thanks") as AudioClip;
+                                m_audioSource.Play();
                                 m_mainStep = Step.STEP_EXIT;
                             }
                             else
@@ -183,8 +185,12 @@ public class GameManager : MonoBehaviour {
                 break;
             case Step.STEP_EXIT:
                 {
+                    if(speechThanks())
+                    {
+                        Application.LoadLevel("title");
+                    }
                     m_resultText.text = "Clear!";
-                    Application.LoadLevel("title");
+                    
                 }
                 break;
             default:
@@ -293,5 +299,21 @@ public class GameManager : MonoBehaviour {
             return true;
         }
         return false;
+    }
+
+
+    bool speechThanks()
+    {
+        if(m_audioSource.isPlaying)
+        {
+            return false;
+        }
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            return true;
+        }
+        return false;
+
     }
 }
