@@ -150,6 +150,7 @@ public class GameManager : MonoBehaviour {
                         m_result == Result.RESULT_ERROR )
                     {
                         m_mainStep = Step.STEP_DECISION;
+                        m_timer = 0.0f;
                         if(m_result == Result.RESULT_OK)
                         {
                             showMaru();
