@@ -3,6 +3,7 @@ using System.Collections;
 
 public class ShakeCamera : MonoBehaviour {
 
+    public Vector3 rotate = Vector3.zero;
     Quaternion qq = Quaternion.Euler(0, 5, 0);
     Quaternion q = Quaternion.identity;
 
@@ -10,6 +11,7 @@ public class ShakeCamera : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        qq = Quaternion.Euler(rotate.x, rotate.y, rotate.z);
         q = transform.localRotation;
     }
 	
