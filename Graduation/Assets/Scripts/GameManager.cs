@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour {
     private float m_timer;
     public float m_waitTime = 10.0f;
     public float m_answerTime = 2.5f;
+    public float m_juliusDisableTime = 1.0f;
 
     public AudioClip[] m_audioClips;
     public AudioSource m_audioSource;
@@ -120,6 +121,9 @@ public class GameManager : MonoBehaviour {
                         m_imageAnswerDup.sprite = sp;
                         m_imageAnswer.sprite = sp;
 
+                        //音声認識をクリア(この時点で即時認識を阻止)
+                        julius.Result = "";
+
                         m_mainStep = Step.STEP_ANSWER;
                     }
                 }
@@ -209,6 +213,11 @@ public class GameManager : MonoBehaviour {
     bool timeup(float dt)
     {
         m_timer += dt;
+        //1秒以内は流石に阻止
+        if(m_timer < m_juliusDisableTime)
+        {
+            julius.Result = "";
+        }
         if(m_timer > m_waitTime)
         {
             m_timer = 0.0f;
